@@ -1,0 +1,375 @@
+<html>
+
+<head>
+<title>Lossy Data Compression: JPEG</title>
+</head>
+
+<body>
+
+<table border="0" width="100%" cellpadding="0">
+  <tr>
+    <td width="100%"><img src="../../maintitle.gif" alt="maintitle.gif (3356 bytes)"
+    width="890" height="49"> <table border="0" width="100%" cellpadding="0">
+      <tr>
+        <td width="100"></td>
+        <td width="800"><!--webbot bot="ImageMap" startspan
+        rectangle="(688,5) (755, 25)  ../../fuzz/index.htm"
+        rectangle="(487,4) (538, 25)  ../index.htm"
+        rectangle="(250,1) (339, 25)  ../../lossless/index.htm"
+        rectangle="(43,3) (144, 24)  ../../overview/index.htm" src="../menu_intro.gif" width="799"
+        height="26" alt="menu_intro.gif (1868 bytes)" border="0" --><MAP NAME="FrontPageMap0"><AREA SHAPE="RECT" COORDS="688, 5, 755, 25" HREF="../../fuzz/index.htm"><AREA SHAPE="RECT" COORDS="487, 4, 538, 25" HREF="../index.htm"><AREA SHAPE="RECT" COORDS="250, 1, 339, 25" HREF="../../lossless/index.htm"><AREA SHAPE="RECT" COORDS="43, 3, 144, 24" HREF="../../overview/index.htm"></MAP><img src="../menu_intro.gif" width="799" height="26" alt="menu_intro.gif (1868 bytes)" border="0" usemap="#FrontPageMap0"><!--webbot bot="ImageMap"
+        i-checksum="3956" endspan --></td>
+        <td width="100"></td>
+      </tr>
+      <tr>
+        <td width="100"></td>
+        <td width="800"><!--webbot bot="ImageMap" startspan
+        rectangle=" (633,1) (682, 25)  ../mp3/index.htm" rectangle=" (110,5) (178, 25)  index.htm"
+        src="menu_bar_j.GIF" width="799" height="26" alt="menu_bar_j.GIF (1308 bytes)" border="0" --><MAP NAME="FrontPageMap1"><AREA SHAPE="RECT" COORDS="633, 1, 682, 25" HREF="../mp3/index.htm"><AREA SHAPE="RECT" COORDS="110, 5, 178, 25" HREF="index.htm"></MAP><img src="menu_bar_j.GIF" width="799" height="26" alt="menu_bar_j.GIF (1308 bytes)" border="0" usemap="#FrontPageMap1"><!--webbot
+        bot="ImageMap" i-checksum="11018" endspan --></td>
+        <td width="100"></td>
+      </tr>
+      <tr>
+        <td width="100"></td>
+        <td width="800">&nbsp;<table border="0" width="100%" cellpadding="0">
+          <tr>
+            <td width="32%" valign="top"></td>
+            <td width="68%" valign="top"><a name="top"></a><font face="Arial" size="2"><a
+            href="index.htm">Introduction</a><br>
+            <a href="algorithm.htm">Algorithm</a><br>
+            &nbsp;&nbsp;&nbsp; - <a href="dct.htm">DCT</a><br>
+            &nbsp;&nbsp;&nbsp; - <a href="coeff.htm">Coefficient Quantization</a><br>
+            &nbsp;&nbsp;&nbsp; - <a href="lossless.htm">Lossless Compression</a><br>
+            <a href="color.htm">Color</a><br>
+            <a href="future.htm">Future</a><b><p>The Discrete Cosine Transform (DCT)</b></p>
+            <p>The key to the JPEG baseline compression process is a mathematical transformation known
+            as the Discrete Cosine Transform (DCT). The DCT is in a class of mathematical operations
+            that includes the well known Fast Fourier Transform (FFT), as well as many others. The
+            basic purpose of these operations is to take a signal and transform it from one type of
+            representation to another. For example, an image is a two-dimensional signal that is
+            perceived by the human visual system. The DCT can be used to convert the signal (spatial
+            information) into numeric data (&quot;frequency&quot; or &quot;spectral&quot; information)
+            so that the image&#146;s information exists in a quantitative form that can be manipulated
+            for compression.</p>
+            <p>The signal for a graphical image can be thought of as a three-dimensional signal. The X
+            and Y-axes of the image&#146;s signal are the two dimensions of the screen, while the
+            amplitude of the signal, the Z-axis, is the value of the pixel at (X, Y). This can be
+            represented visually by a two-dimensional array where each cell contains the numerical
+            value of the pixel at that location. As the specifics of a two-dimensional DCT matrix are
+            rather complex, we will simplify the problem by first considering the derivation and
+            intentions of a one-dimensional DCT matrix.</p>
+            <p><b>&nbsp;</p>
+            <p ALIGN="CENTER">The One-Dimensional DCT</b></p>
+            <p><img SRC="Image8.gif" WIDTH="402" HEIGHT="362"> We start with a set of eight arbitrary
+            grayscale samples as charted below, where each bar represents the luminosity of a single
+            pixel.</p>
+            <p>These values contain all the information necessary to define the eight pixels. Thus the
+            ultimate goal is to compress this data so it can be stored or transmitted and later
+            decompressed to reform the original image. However, as explained above, simple entropy or
+            statistical encoding of this data will not be extremely effective because in continuous
+            tone images, the levels of luminosity have equal probabilities of occurring. As a more
+            effective alternative, the DCT can manipulate this data, separating information crucial to
+            the definition of the image from information that&#146;s presence is not perceivable by
+            the human eye. The insignificant information can then be &quot;discarded&quot; through the
+            quantization phase of JPEG coding, thus achieving large-scale compression. Simply put, the
+            purpose of the DCT transformation phase is to <i>identify</i> &quot;pieces of information
+            in the image&#146;s signal that can be effectively &#145;thrown away&#146; without
+            seriously compromising the quality of the image&quot; (Nelson 359). No information is
+            lost, nor is any compression achieved, in the DCT stage. This initial phase is merely a
+            preparatory step that allows for and leads to the lossy coefficient quantization stage
+            that follows.</p>
+            <p>The first step involved in the &quot;rearrangement&quot; of the data displayed in
+            figure (a) is to perform a level shift by 128, the result of which is shown in figure (b)
+            below.</p>
+            <p><img SRC="Image9.gif" WIDTH="403" HEIGHT="365"></p>
+            <p>The samples have values in the range of 0 to 255. By shifting the level of their graph
+            by 128, half their range, we obtain the values of f(x) in figure (b). Using f(x), we can
+            decompose the eight sample values into a set of waveforms of different spatial
+            frequencies. This decomposition is where the separation of the more significant
+            low-frequency components from the less significant high-frequency components takes place.</p>
+            <p>Below is a set of waveforms of eight different spatial frequencies, all of uniform
+            amplitude and each sampled at eight points.</p>
+            <p>&nbsp;</p>
+            <p>Below is a set of cosine waveforms of eight different spatial frequencies. <img
+            SRC="Image10.gif" WIDTH="719" HEIGHT="285"></p>
+            <p><img SRC="Image11.gif" WIDTH="721" HEIGHT="283"></p>
+            <p><img SRC="Image12.gif" WIDTH="718" HEIGHT="284"></p>
+            <p><img SRC="Image13.gif" WIDTH="716" HEIGHT="283"></p>
+            <p>The top left waveform (u = 0) is simply a constant, whereas the other seven waveforms
+            (u = 1, &#133;, 7) show an alternating behavior at progressively higher frequencies. These
+            waveforms, which are called cosine basis functions, are independent, meaning that there is
+            no way that a given waveform can be represented by any combination of the other waveforms.
+            However, the complete set of eight waveforms, when scaled by numbers called coefficients
+            and added together, can be used to represent any eight sample values such as those in
+            figure (b). The intention is to use the Discrete Cosine Transform to determine the values
+            of the coefficients. The coefficients plotted in figure (c) below are the output of an
+            8-point DCT for the eight sample values in figure (b).</p>
+            <p ALIGN="CENTER"><img SRC="Image14.gif" WIDTH="405" HEIGHT="366"></p>
+            <p>There is a direct correlation between the magnitude of the coefficient for a given
+            waveform and the impact of that particular waveform on the quality of the picture. The
+            coefficient that scales the constant basis function (u = 0) is called the DC coefficient,
+            while the other coefficients are called AC coefficients. Note that the DC term gives the
+            average over the set of samples. Furthermore, the DC term is usually a great deal larger
+            in magnitude than the AC terms, and, though it may not be evident in the small sampling
+            depicted by figure (c), as the elements move farther away from the DC term, they tend to
+            become lower and lower in value. Recall that the AC terms farther away from the DC term
+            represent coefficients of waveforms of greater spatial frequencies. The fact that these
+            coefficients tend to be smaller in magnitude suggests that higher-frequency image
+            components play a relatively small role in the determining picture quality, while the
+            majority of image definition comes from lower-frequency image components. This idea
+            becomes extremely important when applied two-dimensionally to an image, for JPEG exploits
+            this exact concept when deciding what information can be eliminated to achieve
+            compression.</p>
+            <p><b>&nbsp;</p>
+            <p ALIGN="CENTER">The Two-Dimensional DCT</b></p>
+            <p>The one-dimensional DCT described above can be extended to apply to two-dimensional
+            image arrays. The two-dimensional cosine basis functions from which sample waveforms are
+            composed are created by multiplying a horizontally oriented set of one-dimensional 8-point
+            basis functions by a vertically oriented set of the same functions. It logically follows
+            that the horizontally oriented set of basis functions represents horizontal frequencies
+            and the other set of basis functions represents vertical frequencies. </p>
+            <p>By convention, the DC term of the horizontal basis functions is to the left, and the DC
+            term for the vertical basis functions is at the top. Consequently, the top, left element
+            of a two-dimensional DCT matrix contains a value that is almost always of a very great
+            magnitude. Furthermore, mirroring the trend found in a one-dimensional DCT matrix, the
+            farther away an AC term is from the DC term, the higher the frequency its corresponding
+            waveform will have and the smaller its magnitude will be. Although the concept of the
+            two-dimensional DCT is not as easily pictured using histograms as is the one-dimensional
+            DCT, the two-dimensional version employs the same underlying principles and thus can be
+            interpreted using identical reasoning (Pennebaker 33).</p>
+            <p>The actual formula for the two-dimensional DCT is shown below. The DCT is performed on
+            an N x N square matrix of pixel values, and it yields an N x N square matrix of frequency
+            coefficients. (In practice, N most often equals 8 because a larger block, though would
+            probably give better compression, often takes a great deal of time to perform DCT
+            calculations, creating an unreasonable tradeoff. As a result, DCT implementations
+            typically break the image down into more manageable 8 x 8 blocks.) The DCT formula looks
+            somewhat intimidating at first glance but can be implemented with a relatively
+            straightforward piece of code.</p>
+            <p><img SRC="Image15.jpg" WIDTH="716" HEIGHT="209"></p>
+            <p>When writing code to implement this function, simple table lookups can replace several
+            terms of the equation to simplify the appearance of the algorithm. The two cosine terms
+            only need to be calculated once at the beginning of the program, and they can be stored
+            for later use. Likewise, the C(x) terms can also be replaced with table lookups. Code to
+            compute the DCT matrix for an N-by-N portion of a display looks somewhat like the
+            following (adapted from <i>The Data Compression Book</i> by Mark Nelson).</p>
+            <p></font><font color="#0000FF" SIZE="2" face="Courier">for (i = 0; i &lt; N; i++) {<br>
+            &nbsp;&nbsp;&nbsp; for (j = 0; j &lt; N; j++) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp = 0.0;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (x = 0; x &lt; N; x++) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (y = 0; y &lt; N;
+            y++) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            temp += Cosines[x][i] *<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Cosines[y][j] *<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Pixel[x][y];<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp *= sqrt(2 * N) * Coefficient[i][j];<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DCT[i][j] = INT_ROUND(temp);<br>
+            &nbsp;&nbsp;&nbsp; }<br>
+            }</font><font face="Arial" size="2"></p>
+            <p>The above code is only one example of an algorithm that implements the DCT
+            transformation on an N x N matrix. This particular algorithm is extremely inefficient due
+            to a double nested for-loop. Although a considerably more efficient form of the DCT can be
+            calculated using matrix operations, the algorithm displayed above is the most
+            straightforward.</p>
+            <p>Below are two matrices representing the DCT input and DCT output blocks from a
+            gray-scale image. Each element of the 8 pixel-by 8-pixel input matrix contains the value
+            of the pixel at the corresponding (x, y) location. These integer values are fed to the DCT
+            algorithm, creating the output matrix shown below it. Each element of the output matrix is
+            a coefficient by which the waveform of the corresponding spatial frequency is multiplied
+            in the decomposition of the image sample.</p>
+            <b><p>Input Pixel Matrix</b></font></p>
+            <table BORDER="1" CELLSPACING="0" CELLPADDING="3" WIDTH="738">
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">140</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">144</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">147</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">140</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">140</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">155</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">179</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">175</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">144</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">152</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">140</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">147</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">140</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">148</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">167</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">179</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">152</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">155</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">136</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">167</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">163</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">162</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">152</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">172</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">168</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">145</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">156</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">160</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">152</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">155</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">136</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">160</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">162</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">148</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">156</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">148</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">140</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">136</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">147</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">162</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">147</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">167</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">140</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">155</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">155</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">140</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">136</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">162</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">136</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">156</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">123</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">167</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">162</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">144</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">140</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">147</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">148</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">155</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">136</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">155</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">152</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">147</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">147</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">136</font></td>
+              </tr>
+            </table>
+            <font face="Arial" size="2"><p><b>&nbsp;</p>
+            <p>Output DCT Matrix</b></font></p>
+            <table BORDER="1" CELLSPACING="0" CELLPADDING="3" WIDTH="738">
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">186</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-18</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">15</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-9</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">23</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-9</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-14</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">19</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">21</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-34</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">26</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-9</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-11</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">11</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">14</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">7</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-10</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-24</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-2</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">6</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-18</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">3</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-20</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-1</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-8</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-5</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">14</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-15</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-8</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-3</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-3</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">8</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-3</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">10</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">8</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">1</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-11</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">18</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">18</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">15</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">4</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-2</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-18</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">8</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">8</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-4</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">1</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-7</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">9</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">1</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-3</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">4</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-1</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-7</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-1</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-2</font></td>
+              </tr>
+              <tr>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">0</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-8</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-2</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">2</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">1</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">4</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">-6</font></td>
+                <td WIDTH="13%" VALIGN="TOP"><font face="Arial" size="2"><p ALIGN="CENTER">0</font></td>
+              </tr>
+            </table>
+            <font face="Arial" size="2"><p>As shown in the output matrix, the DC coefficient, 186, is
+            relatively large in magnitude, and the AC terms become lower in magnitude as they move
+            farther from the DC coefficient. This means that by performing the DCT on the input data,
+            we have concentrated the representation of the image in the upper left coefficients of the
+            output matrix, with the lower right coefficients of the DCT matrix containing less useful
+            information. The next step, quantization of the coefficients in the output matrix,
+            &quot;discards&quot; the less useful data and in turn compresses the image data.</font></p>
+            <p>&nbsp;</td>
+          </tr>
+        </table>
+        </td>
+        <td width="100"></td>
+      </tr>
+      <tr>
+        <td width="100"></td>
+        <td width="800"><font face="Arial" size="2"><p align="center"><a href="#top">back to top</a>
+        | <a href="../../datacompress.html">home</a></font></td>
+        <td width="100"></td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
